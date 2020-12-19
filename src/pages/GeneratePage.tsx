@@ -154,7 +154,7 @@ export default function GeneratePage() {
     setName("");
     setEmail("");
 
-    const link = "https://santa.official.christmas/" + key;
+    const link = "https://official.christmas/" + key;
     Swal.fire({
       icon: "success",
       title: "성공!",
