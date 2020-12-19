@@ -5,6 +5,7 @@ import reportWebVitals from "./reportWebVitals";
 import firebase from "firebase";
 
 import Root from "./routes";
+import { init } from "emailjs-com";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBcEy7ZESIHxNlSVcPLtMat3TSoPjWJHzI",
@@ -18,6 +19,8 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 firebase.analytics();
+
+init("user_tbeVQ3Dgxtdq1fCYiQ2OB");
 
 ReactDOM.render(
   <React.StrictMode>

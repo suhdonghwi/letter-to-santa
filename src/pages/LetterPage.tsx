@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components/macro";
 import { RouteComponentProps, useHistory } from "react-router-dom";
 import firebase from "firebase";
+import Swal from "sweetalert2";
+import emailjs from "emailjs-com";
 
 const Main = styled.main`
   min-height: 100%;
@@ -114,7 +116,9 @@ export default function LetterPage({
   match,
 }: RouteComponentProps<{ key: string }>) {
   const [loading, setLoading] = useState(true);
+  const [sending, setSending] = useState(false);
 
+  const [content, setContent] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
 
@@ -135,6 +139,11 @@ export default function LetterPage({
         .once("value");
       const data = dataSnapshot.val();
 
+      if (data.sent) {
+        history.push("/");
+        return;
+      }
+
       setName(data.name);
       setEmail(data.email);
       setLoading(false);
@@ -142,6 +151,60 @@ export default function LetterPage({
 
     fetch();
   });
+
+  async function onYes() {
+    if (sending) return;
+    if (content.trim().length < 10) {
+      Swal.fire({
+        icon: "error",
+        title: "오류",
+        text: "편지 내용이 너무 짧아요! 조금 더 입력해주세요.",
+        heightAuto: false,
+      });
+      return;
+    }
+
+    const params = {
+      from_name: name,
+      to_email: email,
+      message: content,
+    };
+
+    try {
+      setSending(true);
+      await emailjs.send("service_axuu45f", "template_fl5v0ub", params);
+      await firebase.database().ref(`data/${key}/sent`).set(true);
+      await Swal.fire({
+        icon: "success",
+        title: "성공!",
+        text:
+          "산타 할아버지께 편지를 보냈어요! 크리스마스까지 잘 기다릴 수 있죠?",
+        heightAuto: false,
+      });
+
+      history.push("/");
+    } catch (err) {
+      console.log(err);
+      Swal.fire({
+        icon: "error",
+        title: "오류",
+        text: "편지를 보내기에 실패했어요. 이따가 다시 써주세요!",
+        heightAuto: false,
+      });
+
+      setSending(false);
+    }
+  }
+
+  function onNo() {
+    if (sending) return;
+    Swal.fire({
+      icon: "error",
+      title: "이런..",
+      text: "산타 할아버지께서는 착한 아이에게만 소중한 선물을 준답니다.",
+      heightAuto: false,
+    });
+  }
 
   return (
     <Main>
@@ -157,11 +220,26 @@ export default function LetterPage({
           </Description>
           <Form>
             <Label htmlFor="letter">편지 내용</Label>
-            <LetterInput name="letter" rows={13} />
+            <LetterInput
+              name="letter"
+              rows={13}
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+            />
             <Label>올해 정말 착하게 살았나요?</Label>
             <YesNo>
-              <YesNoButton color="#20c997">네!</YesNoButton>
-              <YesNoButton color="#ff6b6b">아니요..</YesNoButton>
+              <YesNoButton
+                color={sending ? "#adb5bd" : "#20c997"}
+                onClick={onYes}
+              >
+                네!
+              </YesNoButton>
+              <YesNoButton
+                color={sending ? "#adb5bd" : "#ff6b6b"}
+                onClick={onNo}
+              >
+                아니요..
+              </YesNoButton>
             </YesNo>
           </Form>
         </>
