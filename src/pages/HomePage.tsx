@@ -12,6 +12,7 @@ const Main = styled.main`
   background-repeat: no-repeat;
   background-position: center bottom;
   background-size: auto 50vh;
+  background-color: #f1f3f5;
   
   @media screen and (max-height: 600px) {
     background: none;

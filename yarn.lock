@@ -9186,6 +9186,11 @@ react-scripts@4.0.1:
   optionalDependencies:
     fsevents "^2.1.3"
 
+react-snowfall@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/react-snowfall/-/react-snowfall-1.0.2.tgz#cafdeacea28638ea710687f101ec4c8e92550e9c"
+  integrity sha512-wmKa7Vhl26Ixo5hBp3lgM9z7o43itLv7LF7IuuD0vZPh3TclfM2wokujQb/gg5Ml2c6r6hyU7WXmvMg63TkhtA==
+
 react@^17.0.1:
   version "17.0.1"
   resolved "https://registry.yarnpkg.com/react/-/react-17.0.1.tgz#6e0600416bd57574e3f86d92edba3d9008726127"
