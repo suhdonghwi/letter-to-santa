@@ -1,5 +1,7 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components/macro";
+import { RouteComponentProps, useHistory } from "react-router-dom";
+import firebase from "firebase";
 
 const Main = styled.main`
   min-height: 100%;
@@ -11,6 +13,10 @@ const Main = styled.main`
 
   padding: 3rem 2rem;
   box-sizing: border-box;
+`;
+
+const LoadingText = styled.p`
+  font-size: 1.5rem;
 `;
 
 const Title = styled.h1`
@@ -104,24 +110,62 @@ const YesNoButton = styled.button<{ color: string }>`
   margin: 0 0.5rem;
 `;
 
-export default function LetterPage() {
+export default function LetterPage({
+  match,
+}: RouteComponentProps<{ key: string }>) {
+  const [loading, setLoading] = useState(true);
+
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+
+  const key = match.params.key;
+  const history = useHistory();
+
+  useEffect(() => {
+    async function fetch() {
+      const keySnapshot = await firebase.database().ref("data").once("value");
+      if (!keySnapshot.hasChild(key)) {
+        history.push("/");
+        return;
+      }
+
+      const dataSnapshot = await firebase
+        .database()
+        .ref(`data/${key}`)
+        .once("value");
+      const data = dataSnapshot.val();
+
+      setName(data.name);
+      setEmail(data.email);
+      setLoading(false);
+    }
+
+    fetch();
+  });
+
   return (
     <Main>
-      <Title>산타 할아버지께 편지 🎄</Title>
-      <Description>
-        올해는 산타 할아버지께 어떤 선물을 받고 싶나요? 산타 할아버지께 쓰고
-        싶은 말과 함께 적어보아요! 정성스럽게 적을수록 산타 할아버지께서
-        좋아하실 거예요!
-      </Description>
-      <Form>
-        <Label htmlFor="letter">편지 내용</Label>
-        <LetterInput name="letter" rows={13} />
-        <Label>올해 정말 착하게 살았나요?</Label>
-        <YesNo>
-          <YesNoButton color="#20c997">네!</YesNoButton>
-          <YesNoButton color="#ff6b6b">아니요..</YesNoButton>
-        </YesNo>
-      </Form>
+      {loading ? (
+        <LoadingText>로딩중 ...</LoadingText>
+      ) : (
+        <>
+          <Title>산타 할아버지께 편지 🎄</Title>
+          <Description>
+            {name} 친구! 올해는 산타 할아버지께 어떤 선물을 받고 싶나요? 산타
+            할아버지께 쓰고 싶은 말과 함께 적어보아요! 정성스럽게 적을수록 산타
+            할아버지께서 좋아하실 거예요!
+          </Description>
+          <Form>
+            <Label htmlFor="letter">편지 내용</Label>
+            <LetterInput name="letter" rows={13} />
+            <Label>올해 정말 착하게 살았나요?</Label>
+            <YesNo>
+              <YesNoButton color="#20c997">네!</YesNoButton>
+              <YesNoButton color="#ff6b6b">아니요..</YesNoButton>
+            </YesNo>
+          </Form>
+        </>
+      )}
     </Main>
   );
 }

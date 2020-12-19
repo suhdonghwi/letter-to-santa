@@ -11,7 +11,7 @@ export default function Root() {
       <Switch>
         <Route path="/" exact component={HomePage} />
         <Route path="/generate" exact component={GeneratePage} />
-        <Route path="/letter" exact component={LetterPage} />
+        <Route path="/:key" exact component={LetterPage} />
         <Redirect path="*" to="/" />
       </Switch>
     </BrowserRouter>
