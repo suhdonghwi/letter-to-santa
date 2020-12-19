@@ -167,8 +167,9 @@ export default function GeneratePage() {
     <Main>
       <Title>산타 할아버지께 편지 🎄</Title>
       <Description>
-        아이들이 갖고 싶은 선물들을 편지에 써서 전송하면 이메일 주소로
-        전송됩니다. 크리스마스 선물 구입에 참고해보세요 :)
+        아이들이 받고 싶은 크리스마스 선물들을 편지에 써서 전송하면 미리
+        등록해두신 이메일 주소로 전송됩니다. 아이들의 크리스마스 선물 구입에
+        참고해보시고, 행복한 연말 보내세요!
       </Description>
 
       <Form onSubmit={onSubmit}>
