@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components/macro";
 import dayjs from "dayjs";
+import Snowfall from "react-snowfall";
 
 const Main = styled.main`
   height: 100%;
@@ -65,6 +66,7 @@ export default function HomePage() {
 
   return (
     <Main>
+      <Snowfall color="#ced4da" />
       <ContentBox>
         <CheerMessage>조금 특별했던 2020, 수고 많으셨습니다! 🎄</CheerMessage>
         <DDayText>D-{dday + 1}</DDayText>
