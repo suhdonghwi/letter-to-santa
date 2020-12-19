@@ -59,6 +59,7 @@ const Input = styled.input`
   border: none;
   border-radius: 10px;
 
+  font-family: "NanumBarunpen";
   font-size: 1.2rem;
   padding: 0.6rem 0.7rem;
 
