@@ -14,7 +14,7 @@ const Main = styled.main`
   background-position: center bottom;
   background-size: auto 50vh;
   background-color: #f1f3f5;
-  
+
   @media screen and (max-height: 600px) {
     background: none;
   }
@@ -62,14 +62,16 @@ const ToChristmas = styled.small`
 `;
 
 export default function HomePage() {
-  const dday = dayjs("2020-12-25").diff(dayjs(), "day");
+  const dday = Math.floor(dayjs().diff(dayjs("2020-12-25"), "day", true));
+  const ddayString =
+    dday === 0 ? "-DAY" : dday < 0 ? dday.toString() : "+" + dday;
 
   return (
     <Main>
       <Snowfall color="#ced4da" />
       <ContentBox>
         <CheerMessage>조금 특별했던 2020, 수고 많으셨습니다! 🎄</CheerMessage>
-        <DDayText>D-{dday + 1}</DDayText>
+        <DDayText>D{ddayString}</DDayText>
         <ToChristmas>크리스마스까지</ToChristmas>
       </ContentBox>
     </Main>
