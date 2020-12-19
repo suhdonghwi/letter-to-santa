@@ -2,8 +2,22 @@ import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 import reportWebVitals from "./reportWebVitals";
+import firebase from "firebase";
 
 import Root from "./routes";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBcEy7ZESIHxNlSVcPLtMat3TSoPjWJHzI",
+  authDomain: "letter-to-santa-61efd.firebaseapp.com",
+  projectId: "letter-to-santa-61efd",
+  storageBucket: "letter-to-santa-61efd.appspot.com",
+  messagingSenderId: "1082826458249",
+  appId: "1:1082826458249:web:b4cf47d13705cd8776b258",
+  measurementId: "G-8XMJXTNVCF",
+};
+
+firebase.initializeApp(firebaseConfig);
+firebase.analytics();
 
 ReactDOM.render(
   <React.StrictMode>
