@@ -1,5 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components/macro";
+import Swal from "sweetalert2";
+import firebase from "firebase";
 
 const Main = styled.main`
   min-height: 100%;
@@ -39,7 +41,7 @@ const Description = styled.p`
   }
 `;
 
-const Form = styled.div`
+const Form = styled.form`
   width: 17rem;
 `;
 
@@ -83,9 +85,84 @@ const Submit = styled.input`
   font-size: 1.1rem;
   color: white;
   width: 100%;
+
+  &.loading {
+    background-color: #adb5bd;
+  }
 `;
 
+function generateKey(existingKeys: string[]) {
+  let result: string;
+  const characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+  do {
+    result = "";
+    for (let i = 0; i < 5; i++) {
+      result += characters.charAt(
+        Math.floor(Math.random() * characters.length)
+      );
+    }
+  } while (existingKeys.includes(result));
+
+  return result;
+}
+
 export default function GeneratePage() {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (loading) return;
+
+    let trimmedName = name.trim();
+    let trimmedEmail = email.trim();
+
+    if (trimmedName.length === 0) {
+      Swal.fire({
+        icon: "error",
+        title: "다시 확인해주세요!",
+        text: "이름을 입력해주세요.",
+        heightAuto: false,
+      });
+      return;
+    }
+
+    if (trimmedEmail.length === 0) {
+      Swal.fire({
+        icon: "error",
+        title: "다시 확인해주세요!",
+        text: "이메일을 입력해주세요.",
+        heightAuto: false,
+      });
+      return;
+    }
+
+    setLoading(true);
+
+    const dataSnapshot = await firebase.database().ref("data").once("value");
+    const key = generateKey(Object.keys(dataSnapshot.val()));
+
+    await firebase
+      .database()
+      .ref(`data/${key}`)
+      .set({ name: trimmedName, email: trimmedEmail });
+
+    setLoading(false);
+    setName("");
+    setEmail("");
+
+    const link = "https://santa.official.christmas/" + key;
+    Swal.fire({
+      icon: "success",
+      title: "성공!",
+      html: `생성된 링크 : <a href="${link}">${link}</a><br/>위 링크를 복사해서 아이에게 보내주세요.`,
+      heightAuto: false,
+    });
+  }
+
   return (
     <Main>
       <Title>산타 할아버지께 편지 🎄</Title>
@@ -94,13 +171,27 @@ export default function GeneratePage() {
         전송됩니다. 크리스마스 선물 구입에 참고해보세요 :)
       </Description>
 
-      <Form>
+      <Form onSubmit={onSubmit}>
         <Label htmlFor="name">착한 아이 이름</Label>
-        <Input type="text" name="name" />
+        <Input
+          type="text"
+          name="name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
         <Label htmlFor="email">보낼 이메일 주소</Label>
-        <Input type="email" name="email" />
+        <Input
+          type="email"
+          name="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
 
-        <Submit type="submit" value="링크 생성" />
+        <Submit
+          type="submit"
+          value="링크 생성"
+          className={loading ? "loading" : ""}
+        />
       </Form>
     </Main>
   );
