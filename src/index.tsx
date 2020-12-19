@@ -1,14 +1,15 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
-import App from "./App";
 import reportWebVitals from "./reportWebVitals";
+
 import Snowfall from "react-snowfall";
+import Root from "./routes";
 
 ReactDOM.render(
   <React.StrictMode>
     <Snowfall color="#ced4da" />
-    <App />
+    <Root />
   </React.StrictMode>,
   document.getElementById("root")
 );
